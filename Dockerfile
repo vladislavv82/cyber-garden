@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install app dependencies
-RUN npm install
+RUN yarn
 
 # Bundle app source
 COPY . .
@@ -16,7 +16,7 @@ COPY . .
 RUN npx prisma generate
 
 # Creates a "dist" folder with the production build
-RUN npm run build
+RUN yarn run build
 
 # Start the server using the production build
 CMD [ "node", "dist/src/main.js" ]

@@ -29,6 +29,7 @@ model User {
 
   avatarPath String?
   verificationToken String? @default(cuid()) @map("verification_token")
+  token String? @default(cuid()) @map("token")
 
   rights Role[] @default([USER])
 
