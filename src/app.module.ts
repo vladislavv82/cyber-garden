@@ -1,9 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from './auth/auth.module'
 import { UserModule } from './user/user.module'
+import { TaskModule } from './task/task.module';
+import { PomodoroModule } from './pomodoro/pomodoro.module';
+import { TimeBlockModule } from './time-block/time-block.module';
 
 @Module({
 	imports: [
@@ -11,7 +14,10 @@ import { UserModule } from './user/user.module'
 			isGlobal: true
 		}),
 		AuthModule,
-		UserModule
+		UserModule,
+		TaskModule,
+		PomodoroModule,
+		TimeBlockModule
 	]
 })
 export class AppModule implements NestModule {
