@@ -43,11 +43,10 @@ export class SchedulerService {
 
 			if (user) {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const emailSent = await this.emailService.sendEmail(
-					user.email,
-					'Напоминание о задаче',
-					`Осталось меньше 30 минут до выполнения задачи: ${task.name}`
-				)
+				const emailSent = await this.emailService.sendNotification(
+                    user.email,
+                    task.name
+                  );
 				this.logger.log(`Напоминание отправлено на ${user.email}`)
 			} else {
 				this.logger.warn('Пользователь не найден для задачи: ' + task.name)
