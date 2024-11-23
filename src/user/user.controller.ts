@@ -1,6 +1,6 @@
 import { Auth } from '@/auth/decorators/auth.decorator'
 import { CurrentUser } from '@/auth/decorators/user.decorator'
-import { Body, Controller, Get, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
 import { Role, User } from '@prisma/client'
 import { UserService } from './user.service'
 import { GroupService } from '@/group/group.service'
@@ -47,8 +47,8 @@ export class UserController {
 	}
 
 	@Auth()
-	@Get('profile')
-	async profile(@CurrentUser('id') id: string) {
+	@Get('profile') 
+	async getProfile(@CurrentUser('id') id: string) {
 		return this.userService.getProfile(id)
 	}
 

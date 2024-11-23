@@ -78,7 +78,7 @@ export class UserService {
 				id
 			},
 			include: {
-				tasks: true
+				tasks: true,
 			}
 		})
 	}

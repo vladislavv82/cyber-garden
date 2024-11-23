@@ -36,9 +36,7 @@ model User {
   tasks            Task[]
   timeBlocks       TimeBlock[]
   pomodoroSessions PomodoroSession[]
-
   GroupMember GroupMember[]
-
   Group Group[]
 }
 
@@ -63,23 +61,23 @@ model GroupMember {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  role GroupRole @default(MEMBER) // Роль пользователя в группе
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
   userId String @map("user_id")
 
-  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId String @map("group_id")
+  group   Group   @relation(fields: [groupId], references: [id])
+  groupId String  @map("group_id")
 
-  @@unique([userId, groupId]) // Уникальность участника в группе
+  role GroupRole @default(MEMBER) @map("role")
+
   @@map("group_member")
 }
 
 enum GroupRole {
-  OWNER
-  ADMIN
   MEMBER
+  TUTOR
+  OWNER
 }
+
 
 model Task {
   id        String   @id @default(cuid())
