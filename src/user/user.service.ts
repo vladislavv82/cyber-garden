@@ -4,7 +4,11 @@ import {
 	IGoogleProfile,
 	IYandexProfile
 } from '@/auth/social-media/social-media-auth.types'
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+	ForbiddenException,
+	Injectable,
+	NotFoundException
+} from '@nestjs/common'
 import type { User } from '@prisma/client'
 import { hash } from 'argon2'
 import { startOfDay, subDays } from 'date-fns'
@@ -78,7 +82,7 @@ export class UserService {
 				id
 			},
 			include: {
-				tasks: true,
+				tasks: true
 			}
 		})
 	}

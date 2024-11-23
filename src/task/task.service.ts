@@ -10,6 +10,20 @@ export class TaskService {
 		return this.prisma.task.findMany({
 			where: {
 				userId
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				updatedAt: true,
+				name: true,
+				priority: true,
+				isCompleted: true,
+				userId: true,
+				category: {
+					select: {
+						name: true
+					}
+				}
 			}
 		})
 	}
@@ -42,6 +56,13 @@ export class TaskService {
 			where: {
 				id: taskId
 			}
+		})
+	}
+
+	async assignCategoryToTask(taskId: string, categoryId: string) {
+		return await this.prisma.task.update({
+			where: { id: taskId },
+			data: { categoryId }
 		})
 	}
 }

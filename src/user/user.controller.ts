@@ -6,12 +6,14 @@ import { UserService } from './user.service'
 import { GroupService } from '@/group/group.service'
 import { CreateGroupDto } from '@/group/dto/create-group.dto'
 import { UpdateUserRoleDto } from './dto/update-user-role.dto'
+import { CategoryService } from '@/category/category.service'
 
 @Controller('users')
 export class UserController {
 	constructor(
 		private readonly userService: UserService,
-		private readonly groupService: GroupService
+		private readonly groupService: GroupService,
+		private readonly categoryService: CategoryService
 	) {}
 
 	@Auth([Role.ADMIN])
@@ -20,7 +22,6 @@ export class UserController {
 		return { text: 'Admin content' }
 	}
 
-	
 	@Auth([Role.ADMIN])
 	@Put(':userId/role')
 	async updateUserRole(
@@ -47,14 +48,23 @@ export class UserController {
 	}
 
 	@Auth()
-	@Get('profile') 
+	@Get('profile')
 	async getProfile(@CurrentUser('id') id: string) {
 		return this.userService.getProfile(id)
 	}
 
 	@Auth()
-	@Put()
+	@Put('profile/update')
 	async updateProfile(@CurrentUser('id') id: string, @Body() dto: User) {
 		return this.userService.update(id, dto)
+	}
+
+	@Auth()
+	@Post('categories/add')
+	async createCategory(
+		@CurrentUser('id') id: string,
+		@Body('name') name: string
+	) {
+		return this.categoryService.createCategory(id, name)
 	}
 }

@@ -51,4 +51,12 @@ export class TaskController {
 	async delete(@Param('id') id: string) {
 		return this.taskService.delete(id)
 	}
+
+	@Put(':taskId/category')
+	async assignCategory(
+		@Param('taskId') taskId: string,
+		@Body('categoryId') categoryId: string
+	) {
+		return this.taskService.assignCategoryToTask(taskId, categoryId)
+	}
 }
