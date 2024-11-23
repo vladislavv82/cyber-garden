@@ -4,11 +4,12 @@ import {
 	IGoogleProfile,
 	IYandexProfile
 } from '@/auth/social-media/social-media-auth.types'
-import { Injectable } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import type { User } from '@prisma/client'
 import { hash } from 'argon2'
 
 import { PrismaService } from 'src/prisma.service'
+import { UpdateUserRoleDto } from './dto/update-user-role.dto'
 
 @Injectable()
 export class UserService {
@@ -33,6 +34,34 @@ export class UserService {
 		})
 	}
 
+	async updateUserRole(
+		adminId: string,
+		userId: string,
+		updateUserRoleDto: UpdateUserRoleDto
+	) {
+		const { role } = updateUserRoleDto
+
+		// Проверяем, что администратор существует и имеет право менять роли
+		const admin = await this.prisma.user.findUnique({ where: { id: adminId } })
+		if (!admin || !admin.rights.includes('ADMIN')) {
+			throw new ForbiddenException('У вас нет разрешения на смену ролей')
+		}
+
+		// Проверяем, что целевой пользователь существует
+		const user = await this.prisma.user.findUnique({ where: { id: userId } })
+		if (!user) {
+			throw new NotFoundException('User not found')
+		}
+
+		// Обновляем роль пользователя
+		return await this.prisma.user.update({
+			where: { id: userId },
+			data: {
+				rights: [role] // Обновляем роли пользователя
+			}
+		})
+	}
+
 	async getByEmail(email: string) {
 		return this.prisma.user.findUnique({
 			where: {
@@ -41,7 +70,9 @@ export class UserService {
 		})
 	}
 
-	async findOrCreateSocialUser(profile: IGoogleProfile | IGithubProfile | IYandexProfile) {
+	async findOrCreateSocialUser(
+		profile: IGoogleProfile | IGithubProfile | IYandexProfile
+	) {
 		let user = await this.getByEmail(profile.email)
 		if (!user) {
 			user = await this._createSocialUser(profile)
@@ -79,12 +110,22 @@ export class UserService {
 		})
 	}
 
-	async update(id: string, data: Partial<User>) {
+	async update(id: string, dto: Partial<User>) {
+		let data = dto
+
+		if (dto.password) {
+			data = { ...dto, password: await hash(dto.password) }
+		}
+
 		return this.prisma.user.update({
 			where: {
 				id
 			},
-			data
+			data,
+			select: {
+				name: true,
+				email: true
+			}
 		})
 	}
 }

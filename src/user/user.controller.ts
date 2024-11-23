@@ -1,34 +1,55 @@
 import { Auth } from '@/auth/decorators/auth.decorator'
 import { CurrentUser } from '@/auth/decorators/user.decorator'
-import { Controller, Get } from '@nestjs/common'
-import { Role } from '@prisma/client'
+import { Body, Controller, Get, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common'
+import { Role, User } from '@prisma/client'
 import { UserService } from './user.service'
+import { GroupService } from '@/group/group.service'
+import { CreateGroupDto } from '@/group/dto/create-group.dto'
+import { UpdateUserRoleDto } from './dto/update-user-role.dto'
 
 @Controller('users')
 export class UserController {
-	constructor(private readonly userService: UserService) {}
+	constructor(
+		private readonly userService: UserService,
+		private readonly groupService: GroupService
+	) {}
 
-	@Auth()
-	@Get('profile')
-	async getProfile(@CurrentUser('id') id: string) {
-		return this.userService.getById(id)
-	}
-
-	@Auth(Role.ADMIN)
-	@Get('premium')
-	async getPremium() {
-		return { text: 'Premium content' }
-	}
-
-	@Auth([Role.ADMIN, Role.ADMIN])
-	@Get('manager')
+	@Auth([Role.ADMIN])
+	@Get('admin')
 	async getManagerContent() {
-		return { text: 'Manager content' }
+		return { text: 'Admin content' }
 	}
 
-	@Auth(Role.ADMIN)
-	@Get('list')
-	async getList() {
-		return this.userService.getUsers()
+	
+	@Auth([Role.ADMIN])
+	@Put(':userId/role')
+	async updateUserRole(
+		@CurrentUser('id') id: string,
+		@Param('userId') userId: string,
+		@Body() updateUserRoleDto: UpdateUserRoleDto
+	) {
+		return this.userService.updateUserRole(id, userId, updateUserRoleDto)
+	}
+
+	@Auth(Role.TUTOR)
+	@Post('group/add')
+	async createGroup(
+		@Body() dto: CreateGroupDto,
+		@CurrentUser('id') userId: string
+	) {
+		return this.groupService.createGroup(userId, dto)
+	}
+
+	@Auth(Role.TUTOR)
+	@Get()
+	async getUserGroups(@CurrentUser('id') userId: string) {
+		return this.groupService.getUserGroups(userId)
+	}
+
+	@UsePipes(new ValidationPipe())
+	@Put()
+	@Auth()
+	async updateProfile(@CurrentUser('id') id: string, @Body() dto: User) {
+		return this.userService.update(id, dto)
 	}
 }

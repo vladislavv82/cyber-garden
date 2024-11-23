@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module'
 import { TaskModule } from './task/task.module';
 import { PomodoroModule } from './pomodoro/pomodoro.module';
 import { TimeBlockModule } from './time-block/time-block.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
 	imports: [
@@ -17,7 +18,8 @@ import { TimeBlockModule } from './time-block/time-block.module';
 		UserModule,
 		TaskModule,
 		PomodoroModule,
-		TimeBlockModule
+		TimeBlockModule,
+		GroupModule
 	]
 })
 export class AppModule implements NestModule {
