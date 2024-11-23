@@ -1,0 +1,71 @@
+.board {
+	@apply grid grid-flow-col gap-2;
+	overflow-x: auto;
+	.column {
+		@apply w-[200px] bg-foreground rounded pt-2;
+		white-space: nowrap;
+		min-height: 79vh;
+		text-align: center;
+		font-size: 16px;
+		.card {
+			@apply  text-[12px] mt-5 p-4 relative bg-zinc-500 dark:bg-zinc-300 text-black;
+
+			&.completed {
+				@apply italic line-through opacity-50;
+			}
+
+			.cardHeader {
+				@apply flex items-center mb-2;
+				font-size: 16px;
+
+				> input:last-child {
+					@apply ml-2;
+				}
+			}
+
+			.cardBody,
+			.cardBody > div > button > span,
+			.cardBody > div > div > button > span {
+				font-size: 83%;
+			}
+
+			.cardBody {
+				> div {
+					@apply mb-2.5 w-max;
+					min-width: 6rem;
+
+					> button:last-child {
+						@apply opacity-15;
+					}
+				}
+			}
+
+			.cardActions {
+				@apply absolute bottom-1 right-1.5 opacity-40;
+			}
+		}
+	}
+}
+
+.grip {
+	@apply text-[14px] opacity-20 transition-opacity -ml-1 -mr-0.5 absolute top-2 right-1.5;
+
+	&:hover,
+	&:active {
+		.grip {
+			@apply opacity-100;
+		}
+	}
+}
+
+.board::-webkit-scrollbar{
+	background-color: #18181b;
+	width: 7px;
+	height: 7px;
+}
+
+.board::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    width: 7px;
+    height: 7px;
+}

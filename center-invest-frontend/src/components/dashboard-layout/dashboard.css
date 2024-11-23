@@ -1,0 +1,11 @@
+.dashboard__scrollbar::-webkit-scrollbar{
+	background-color: #18181b;
+	width: 7px;
+	height: 7px;
+}
+
+.dashboard__scrollbar::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    width: 7px;
+    height: 7px;
+}
