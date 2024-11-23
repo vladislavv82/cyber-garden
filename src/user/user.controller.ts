@@ -46,6 +46,12 @@ export class UserController {
 		return this.groupService.getUserGroups(userId)
 	}
 
+	@Get()
+	@Auth()
+	async profile(@CurrentUser('id') id: string) {
+		return this.userService.getProfile(id)
+	}
+
 	@UsePipes(new ValidationPipe())
 	@Put()
 	@Auth()

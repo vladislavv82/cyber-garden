@@ -39,10 +39,10 @@ export class AuthService {
 		}
 		const user = await this.userService.create(dto)
 
-		await this.emailService.sendVerification(
-			user.email,
-			`http://93.183.80.192:4200/verify-email?token=${user.verificationToken}`
-		)
+		// await this.emailService.sendVerification(
+		// 	user.email,
+		// 	`http://93.183.80.192:4200/verify-email?token=${user.verificationToken}`
+		// )
 
 		return this.buildResponseObject(user)
 	}

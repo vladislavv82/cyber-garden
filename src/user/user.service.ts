@@ -7,7 +7,7 @@ import {
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import type { User } from '@prisma/client'
 import { hash } from 'argon2'
-
+import { startOfDay, subDays } from 'date-fns'
 import { PrismaService } from 'src/prisma.service'
 import { UpdateUserRoleDto } from './dto/update-user-role.dto'
 
@@ -26,10 +26,59 @@ export class UserService {
 		})
 	}
 
-	async getById(id: string) {
+	async getProfile(id: string) {
+		const profile = await this.getById(id)
+
+		const totalTasks = profile.tasks.length
+		const completedTasks = await this.prisma.task.count({
+			where: {
+				userId: id,
+				isCompleted: true
+			}
+		})
+
+		const todayStart = startOfDay(new Date())
+		const weekStart = startOfDay(subDays(new Date(), 7))
+
+		const todayTasks = await this.prisma.task.count({
+			where: {
+				userId: id,
+				createdAt: {
+					gte: todayStart.toISOString()
+				}
+			}
+		})
+
+		const weekTasks = await this.prisma.task.count({
+			where: {
+				userId: id,
+				createdAt: {
+					gte: weekStart.toISOString()
+				}
+			}
+		})
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { password, ...rest } = profile
+
+		return {
+			user: rest,
+			statistics: [
+				{ label: 'Количество задач', value: totalTasks },
+				{ label: 'Выполненные', value: completedTasks },
+				{ label: 'Задачи на сегодня', value: todayTasks },
+				{ label: 'Задания на неделю', value: weekTasks }
+			]
+		}
+	}
+
+	getById(id: string) {
 		return this.prisma.user.findUnique({
 			where: {
 				id
+			},
+			include: {
+				tasks: true
 			}
 		})
 	}
