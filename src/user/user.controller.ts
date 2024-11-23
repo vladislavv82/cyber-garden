@@ -46,15 +46,14 @@ export class UserController {
 		return this.groupService.getUserGroups(userId)
 	}
 
-	@Get()
 	@Auth()
+	@Get('profile')
 	async profile(@CurrentUser('id') id: string) {
 		return this.userService.getProfile(id)
 	}
 
-	@UsePipes(new ValidationPipe())
-	@Put()
 	@Auth()
+	@Put()
 	async updateProfile(@CurrentUser('id') id: string, @Body() dto: User) {
 		return this.userService.update(id, dto)
 	}
