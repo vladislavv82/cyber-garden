@@ -12,7 +12,7 @@ export class SchedulerService {
 		private emailService: EmailService
 	) {}
 
-	@Cron('*/10 * * * *')
+	@Cron('*/1 * * * *')
 	async handleCron() {
 		this.logger.log('Запуск проверки задач')
 

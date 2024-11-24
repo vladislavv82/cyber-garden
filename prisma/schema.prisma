@@ -15,8 +15,8 @@ datasource db {
 
 model User {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
   email    String  @unique
   name     String?
@@ -32,44 +32,29 @@ model User {
 
   rights Role[] @default([USER])
 
+  group   Group?  @relation(fields: [groupId], references: [id])
+  groupId String?
+
+  groupRole GroupRole @default(MEMBER)
+
   tasks            Task[]
   timeBlocks       TimeBlock[]
   pomodoroSessions PomodoroSession[]
-  GroupMember      GroupMember[]
-  Group            Group[]
   Category         Category[]
 }
 
 model Group {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
   name        String
   description String?
 
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId String @map("owner_id")
-
-  members GroupMember[] // Список участников группы
+  inviteLink String? @map("invite_link")
+  users      User[]
 
   @@map("group")
-}
-
-model GroupMember {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id")
-
-  group   Group  @relation(fields: [groupId], references: [id])
-  groupId String @map("group_id")
-
-  role GroupRole @default(MEMBER) @map("role")
-
-  @@map("group_member")
 }
 
 enum GroupRole {
@@ -80,8 +65,8 @@ enum GroupRole {
 
 model Category {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
   name String @unique
 
@@ -95,26 +80,26 @@ model Category {
 
 model Task {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(0)
 
   name        String
   priority    Priority?
   isCompleted Boolean?  @default(false) @map("is_completed")
 
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String    @map("user_id")
-  
-  categoryId  String? 
-  category    Category? @relation(fields: [categoryId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
 
   @@map("task")
 }
 
 model TimeBlock {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
   name     String
   color    String?
@@ -129,8 +114,8 @@ model TimeBlock {
 
 model PomodoroSession {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
   isCompleted Boolean? @default(false) @map("is_completed")
 
@@ -144,8 +129,8 @@ model PomodoroSession {
 
 model PomodoroRound {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
   totalSeconds Int      @map("total_seconds")
   isCompleted  Boolean? @default(false) @map("is_completed")

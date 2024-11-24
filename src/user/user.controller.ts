@@ -17,12 +17,6 @@ export class UserController {
 	) {}
 
 	@Auth([Role.ADMIN])
-	@Get('admin')
-	async getManagerContent() {
-		return { text: 'Admin content' }
-	}
-
-	@Auth([Role.ADMIN])
 	@Put(':userId/role')
 	async updateUserRole(
 		@CurrentUser('id') id: string,
@@ -32,8 +26,14 @@ export class UserController {
 		return this.userService.updateUserRole(id, userId, updateUserRoleDto)
 	}
 
-	@Auth(Role.TUTOR)
-	@Post('group/add')
+	@Auth([Role.ADMIN])
+	@Get('group/all')
+	async getAllGroups() {
+		return this.groupService.getAllGroups()
+	}
+
+	@Auth([Role.TUTOR, Role.ADMIN])
+	@Post('group/create')
 	async createGroup(
 		@Body() dto: CreateGroupDto,
 		@CurrentUser('id') userId: string
@@ -41,16 +41,16 @@ export class UserController {
 		return this.groupService.createGroup(userId, dto)
 	}
 
-	@Auth(Role.TUTOR)
-	@Get()
-	async getUserGroups(@CurrentUser('id') userId: string) {
-		return this.groupService.getUserGroups(userId)
-	}
-
 	@Auth()
 	@Get('profile')
 	async getProfile(@CurrentUser('id') id: string) {
 		return this.userService.getProfile(id)
+	}
+
+	@Auth()
+	@Get('my/group')
+	async getMyGroup(@CurrentUser('id') id: string) {
+		return this.userService.getMyGroup(id)
 	}
 
 	@Auth()

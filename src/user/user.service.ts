@@ -76,6 +76,17 @@ export class UserService {
 		}
 	}
 
+	async getMyGroup(userId: string) {
+		return this.prisma.user.findUnique({
+			where: { id: userId },
+			include: {
+				group: true,
+			},
+		});
+	}
+	
+	
+
 	getById(id: string) {
 		return this.prisma.user.findUnique({
 			where: {
