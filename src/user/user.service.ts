@@ -6,6 +6,8 @@ import {
 } from '@/auth/social-media/social-media-auth.types'
 import {
 	ForbiddenException,
+	HttpException,
+	HttpStatus,
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
@@ -22,12 +24,30 @@ export class UserService {
 	async getUsers() {
 		return this.prisma.user.findMany({
 			select: {
+				id: true,
 				name: true,
 				email: true,
-				id: true,
+				rights: true,
 				password: false
 			}
 		})
+	}
+
+	async deleteUserById(userId: string): Promise<{ message: string }> {
+		try {
+			await this.prisma.user.delete({
+				where: {
+					id: userId
+				}
+			})
+			return { message: 'Пользователь успешно удалён' }
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (error) {
+			throw new HttpException(
+				'Не удалось удалить пользователя',
+				HttpStatus.BAD_REQUEST
+			)
+		}
 	}
 
 	async getProfile(id: string) {
@@ -80,12 +100,10 @@ export class UserService {
 		return this.prisma.user.findUnique({
 			where: { id: userId },
 			include: {
-				group: true,
-			},
-		});
+				group: true
+			}
+		})
 	}
-	
-	
 
 	getById(id: string) {
 		return this.prisma.user.findUnique({

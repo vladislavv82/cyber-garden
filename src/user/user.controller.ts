@@ -1,6 +1,6 @@
 import { Auth } from '@/auth/decorators/auth.decorator'
 import { CurrentUser } from '@/auth/decorators/user.decorator'
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { Role, User } from '@prisma/client'
 import { UserService } from './user.service'
 import { GroupService } from '@/group/group.service'
@@ -16,6 +16,23 @@ export class UserController {
 		private readonly categoryService: CategoryService
 	) {}
 
+	// Получить всех
+	@Auth([Role.ADMIN])
+	@Get('all')
+	async getAllUsers() {
+		return this.userService.getUsers()
+	}
+
+	// Только администраторы могут удалять пользователей
+	@Auth([Role.ADMIN])
+	@Delete(':userId')
+	async deleteUser(
+		@Param('userId') userId: string
+	): Promise<{ message: string }> {
+		return this.userService.deleteUserById(userId)
+	}
+
+	// Повысить права для пользователя
 	@Auth([Role.ADMIN])
 	@Put(':userId/role')
 	async updateUserRole(
@@ -26,6 +43,7 @@ export class UserController {
 		return this.userService.updateUserRole(id, userId, updateUserRoleDto)
 	}
 
+	// Вывести все группы
 	@Auth([Role.ADMIN])
 	@Get('group/all')
 	async getAllGroups() {

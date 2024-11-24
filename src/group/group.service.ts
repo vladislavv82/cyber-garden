@@ -26,6 +26,24 @@ export class GroupService {
 		})
 	}
 
+	// async getGroupsByTutor(userId: string) {
+	// 	return this.prisma.group.findMany({
+	// 		where: {
+	// 			// Добавляем фильтрацию по полю, которое идентифицирует создателя группы
+	// 			createdBy: userId,  // Это поле предполагается в модели
+	// 		},
+	// 		include: {
+	// 			users: {
+	// 				select: {
+	// 					id: true,
+	// 					email: true,
+	// 					name: true
+	// 				}
+	// 			}
+	// 		}
+	// 	})
+	// }
+
 	// Найти группу по ссылке приглашения
 	async findByInviteLink(token: string) {
 		return this.prisma.group.findFirst({
