@@ -31,7 +31,16 @@ export class TaskService {
 	async create(dto: TaskDto, userId: string) {
 		return this.prisma.task.create({
 			data: {
-				...dto,
+				name: dto.name,
+				isCompleted: dto.isCompleted,
+				createdAt: dto.createdAt,
+				priority: dto.priority,
+				
+				category: dto.categoryId
+					? {
+							connect: { id: dto.categoryId } 
+						}
+					: undefined, 
 				user: {
 					connect: {
 						id: userId
@@ -47,7 +56,10 @@ export class TaskService {
 				userId,
 				id: taskId
 			},
-			data: dto
+			data: {
+				...dto,
+				categoryId: dto.categoryId || undefined
+			}
 		})
 	}
 

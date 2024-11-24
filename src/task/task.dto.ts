@@ -19,4 +19,8 @@ export class TaskDto {
 	@IsOptional()
 	@Transform(({ value }) => ('' + value).toLowerCase())
 	priority?: Priority
+
+	@IsString()
+	@IsOptional()
+	categoryId?: string
 }
