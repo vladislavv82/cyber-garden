@@ -35,12 +35,12 @@ export class TaskService {
 				isCompleted: dto.isCompleted,
 				createdAt: dto.createdAt,
 				priority: dto.priority,
-				
+
 				category: dto.categoryId
 					? {
-							connect: { id: dto.categoryId } 
+							connect: { id: dto.categoryId }
 						}
-					: undefined, 
+					: undefined,
 				user: {
 					connect: {
 						id: userId
@@ -53,11 +53,14 @@ export class TaskService {
 	async update(dto: Partial<TaskDto>, taskId: string, userId: string) {
 		return this.prisma.task.update({
 			where: {
-				userId,
-				id: taskId
+				id: taskId, 
+				userId: userId 
 			},
 			data: {
-				...dto,
+				name: dto.name,
+				isCompleted: dto.isCompleted,
+				createdAt: dto.createdAt,
+				priority: dto.priority,
 				categoryId: dto.categoryId || undefined
 			}
 		})
