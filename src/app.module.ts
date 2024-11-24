@@ -10,6 +10,7 @@ import { TimeBlockModule } from './time-block/time-block.module';
 import { GroupModule } from './group/group.module';
 import { CategoryModule } from './category/category.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
 	imports: [
@@ -23,7 +24,8 @@ import { SchedulerModule } from './scheduler/scheduler.module';
 		TimeBlockModule,
 		GroupModule,
 		CategoryModule,
-		SchedulerModule
+		SchedulerModule,
+		ReportModule
 	]
 })
 export class AppModule implements NestModule {
