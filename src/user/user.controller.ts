@@ -60,6 +60,12 @@ export class UserController {
 	}
 
 	@Auth()
+	@Get('categories')
+	async getCategoriesByUser(@CurrentUser('id') userId: string) {
+		return this.categoryService.getCategoriesByUserId(userId)
+	}
+
+	@Auth()
 	@Post('categories/add')
 	async createCategory(
 		@CurrentUser('id') id: string,

@@ -17,8 +17,18 @@ export class CategoryService {
 	}
 
 	// Получение всех категорий
+	// Зачем?
 	async getAllCategories() {
 		return await this.prisma.category.findMany()
+	}
+
+	// Получение по id
+	async getCategoriesByUserId(userId: string) {
+		return this.prisma.category.findMany({
+			where: {
+				userId: userId
+			}
+		})
 	}
 
 	// Обновление категории
